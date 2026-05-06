@@ -1,1 +1,48 @@
-<h1>Hello World</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CS 766 Final Project: Cell Segmentation</title>
+</head>
+<body>
+
+    <h1>CS 766 Final Project: Cell Segmentation</h1>
+
+    <h2>What problem I am trying to solve</h2>
+    <p>
+        Microscopy images are very widely used in both medicine and biology, healthcare in general to study cell behavior, response to medicine/drugs, and overall health. Something that is fundamental to these studies is to be able to individually study cells, and extract their morphology from larger images. The images contain many cells, some which may be overlapping, images that have poor lighting, or just an abundance of noise. All of these factors combined make it more difficult that someone would assume to gather this information, especially with the new tools of our modern age such as AI and deep neural networks.
+    </p>
+
+    <p>
+        My goal however, is to create a computer vision program which segments individual cells from biological images, and again, be able to gather all of the morphological data from them. Some information I can gather would be roundness, actual size of the cell, the boundaries and shape of a cell, etc. In the end, I am hoping to create a program which eliminates the need to manually identify cells/structures and allow the process to be fully automatic.
+    </p>
+
+    <h2>Why is it important? Why am I interested?</h2>
+    <p>
+        The morphologies of cells are strongly related to the biological state. This could be something such as a cell dividing, a cell shrinking and going through apoptosis, or sickly cells which have irregular boundaries when compared to healthier cells. Having something as simple as the shape of a cell can tell numerous stories about a patient and their condition. Due to this, cell morphology is widely used in drug screening, and biomedical research.
+    </p>
+
+    <p>
+        I am interested in this due to my background in both computer science, but my upbringing and current post grad goals. The majority of my family is involved in healthcare, and a common topic of conversation relates to their patients, how they are being cared for, and the amount of work needed by professionals in the field. Along with this, I have altered my career path away from strictly software, with hopes of developing new technologies and methods to aid in early disease detection and/or prevention. With a focus in neurodegenerative diseases, this could be an introductory step in this long term goal.
+    </p>
+
+    <h2>What is the current state-of-the-art?</h2>
+    <p>
+        Modern cell segmentation methods are usually dominated by deep learning approaches which are able to achieve high accuracy, but it’s common for these networks to require large training sets, parameter tuning, and GPU training. For smaller laboratory settings, or smaller hospitals, this may not be available to everyone where the data is limited, or the conditions of the experiments/work change constantly.
+    </p>
+
+    <p>
+        Some of the earlier techniques rely on thresholding, watershed segmentation, edge detection, and other morphological operations. While older, they are still used commonly because they are fast, easy to understand, and do not require the same prerequisites as deep learning and neural networks.
+    </p>
+
+    <h2>Are you planning on re-implementing an existing solution, or propose a new approach?</h2>
+    <p>
+        I am hoping to start with a baseline using classic imaging techniques starting with denoising, and normalization. Once the image is ready, I can add some thresholds, and attempt to use watershed segmentation to see how well this is able to identify individual cells. With the final image, I can then extract the morphological features and categorize them. After I have a working baseline, my aim is to extend this and improve the segmentation strategy to the best of my abilities. So I will start with re-implementing, and hope to propose a new method to segment.
+    </p>
+
+    <h2>If you are proposing your own approach, why do you think existing approaches cannot adequately solve this problem? Why do you think your solution will work better?</h2>
+    <p>
+        A lot of the current approaches separate cells simply using brightness which obviously wouldn’t be able to catch all cases. And others who rely on watershed alone struggle to separate cells that are on top of each other or touching. With my approach, I will focus on the shapes of objects as well rather than just brightness of boundaries to hopefully segment a cell better than the more simple attempts. I can also look at the edge strengths to tell if a cell is overlapping or not.
+    </p>
+
+</body>
+</html>
