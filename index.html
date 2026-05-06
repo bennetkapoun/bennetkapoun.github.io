@@ -1,48 +1,190 @@
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>CS 766 Final Project: Cell Segmentation</title>
+<meta charset="UTF-8">
+<title>CS 766 Final Project: Cell Segmentation</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Georgia, serif;
+        background-color: #f7f7f7;
+        color: #222;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 230px;
+        height: 100%;
+        background-color: #222;
+        padding-top: 60px;
+    }
+
+    .sidebar a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 16px 35px;
+        font-size: 18px;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        color: #ff4fa3;
+    }
+
+    .main {
+        margin-left: 230px;
+    }
+
+    .hero {
+        height: 430px;
+        background-image: linear-gradient(
+            rgba(255,255,255,0.35),
+            rgba(255,255,255,0.35)
+        ), url("background.jpg");
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .hero-text {
+        position: absolute;
+        right: 90px;
+        top: 150px;
+        text-align: center;
+        color: #143f7a;
+    }
+
+    .hero-text h1 {
+        font-family: Arial, sans-serif;
+        font-size: 52px;
+        margin-bottom: 25px;
+    }
+
+    .hero-text p {
+        font-size: 22px;
+        font-style: italic;
+        color: #143f7a;
+    }
+
+    .content {
+        max-width: 950px;
+        margin: 90px auto;
+        padding: 0 40px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #143f7a;
+        font-family: Arial, sans-serif;
+        font-size: 30px;
+        margin-bottom: 35px;
+    }
+
+    p {
+        font-size: 18px;
+        line-height: 1.65;
+        margin-bottom: 22px;
+    }
+</style>
 </head>
+
 <body>
 
-    <h1>CS 766 Final Project: Cell Segmentation</h1>
+<div class="sidebar">
+    <a class="active" href="#home">Home</a>
+    <a href="#problem">Problem</a>
+    <a href="#motivation">Motivation</a>
+    <a href="#state">Related Work</a>
+    <a href="#approach">Approach</a>
+    <a href="#results">Results</a>
+    <a href="#references">References</a>
+</div>
 
-    <h2>What problem I am trying to solve</h2>
-    <p>
-        Microscopy images are very widely used in both medicine and biology, healthcare in general to study cell behavior, response to medicine/drugs, and overall health. Something that is fundamental to these studies is to be able to individually study cells, and extract their morphology from larger images. The images contain many cells, some which may be overlapping, images that have poor lighting, or just an abundance of noise. All of these factors combined make it more difficult that someone would assume to gather this information, especially with the new tools of our modern age such as AI and deep neural networks.
-    </p>
+<div class="main">
 
-    <p>
-        My goal however, is to create a computer vision program which segments individual cells from biological images, and again, be able to gather all of the morphological data from them. Some information I can gather would be roundness, actual size of the cell, the boundaries and shape of a cell, etc. In the end, I am hoping to create a program which eliminates the need to manually identify cells/structures and allow the process to be fully automatic.
-    </p>
+    <section class="hero" id="home">
+        <div class="hero-text">
+            <h1>Cell Segmentation</h1>
+            <p>Bennet Plucienik-Kapoun</p>
+        </div>
+    </section>
 
-    <h2>Why is it important? Why am I interested?</h2>
-    <p>
-        The morphologies of cells are strongly related to the biological state. This could be something such as a cell dividing, a cell shrinking and going through apoptosis, or sickly cells which have irregular boundaries when compared to healthier cells. Having something as simple as the shape of a cell can tell numerous stories about a patient and their condition. Due to this, cell morphology is widely used in drug screening, and biomedical research.
-    </p>
+    <section class="content" id="problem">
+        <h2>Problem Statement</h2>
 
-    <p>
-        I am interested in this due to my background in both computer science, but my upbringing and current post grad goals. The majority of my family is involved in healthcare, and a common topic of conversation relates to their patients, how they are being cared for, and the amount of work needed by professionals in the field. Along with this, I have altered my career path away from strictly software, with hopes of developing new technologies and methods to aid in early disease detection and/or prevention. With a focus in neurodegenerative diseases, this could be an introductory step in this long term goal.
-    </p>
+        <p>
+            Microscopy images are widely used in medicine, biology, and healthcare to study cell behavior,
+            response to medicine or drugs, and overall health. A fundamental part of these studies is the ability
+            to individually identify cells and extract their morphology from larger biological images.
+        </p>
 
-    <h2>What is the current state-of-the-art?</h2>
-    <p>
-        Modern cell segmentation methods are usually dominated by deep learning approaches which are able to achieve high accuracy, but it’s common for these networks to require large training sets, parameter tuning, and GPU training. For smaller laboratory settings, or smaller hospitals, this may not be available to everyone where the data is limited, or the conditions of the experiments/work change constantly.
-    </p>
+        <p>
+            However, these images often contain many cells, including cells that overlap, touch, or appear under
+            poor lighting conditions. Noise and inconsistent staining can also make segmentation difficult.
+            These factors make it harder than it may initially seem to automatically gather useful information
+            from microscopy images.
+        </p>
 
-    <p>
-        Some of the earlier techniques rely on thresholding, watershed segmentation, edge detection, and other morphological operations. While older, they are still used commonly because they are fast, easy to understand, and do not require the same prerequisites as deep learning and neural networks.
-    </p>
+        <p>
+            The goal of this project is to create a computer vision program that segments individual cells from
+            biological images and extracts morphological measurements such as roundness, size, boundaries, and shape.
+            Ultimately, this project aims to reduce the need for manual identification and make the process more automatic.
+        </p>
+    </section>
 
-    <h2>Are you planning on re-implementing an existing solution, or propose a new approach?</h2>
-    <p>
-        I am hoping to start with a baseline using classic imaging techniques starting with denoising, and normalization. Once the image is ready, I can add some thresholds, and attempt to use watershed segmentation to see how well this is able to identify individual cells. With the final image, I can then extract the morphological features and categorize them. After I have a working baseline, my aim is to extend this and improve the segmentation strategy to the best of my abilities. So I will start with re-implementing, and hope to propose a new method to segment.
-    </p>
+    <section class="content" id="motivation">
+        <h2>Motivation</h2>
 
-    <h2>If you are proposing your own approach, why do you think existing approaches cannot adequately solve this problem? Why do you think your solution will work better?</h2>
-    <p>
-        A lot of the current approaches separate cells simply using brightness which obviously wouldn’t be able to catch all cases. And others who rely on watershed alone struggle to separate cells that are on top of each other or touching. With my approach, I will focus on the shapes of objects as well rather than just brightness of boundaries to hopefully segment a cell better than the more simple attempts. I can also look at the edge strengths to tell if a cell is overlapping or not.
-    </p>
+        <p>
+            Cell morphology is strongly related to biological state. For example, a cell may be dividing,
+            shrinking during apoptosis, or showing irregular boundaries due to disease. Even simple measurements
+            such as cell shape and size can provide important information about a sample.
+        </p>
+
+        <p>
+            I am interested in this project because it combines my computer science background with my interest
+            in healthcare and biomedical engineering. Many people in my family work in healthcare, and I am interested
+            in developing technologies that could help support early disease detection and prevention.
+        </p>
+    </section>
+
+    <section class="content" id="state">
+        <h2>Current State-of-the-Art</h2>
+
+        <p>
+            Modern cell segmentation methods are often dominated by deep learning approaches. These methods can be
+            highly accurate, but they commonly require large training datasets, parameter tuning, and GPU resources.
+            This can make them difficult to use in smaller settings where data and computing resources are limited.
+        </p>
+
+        <p>
+            Classical image processing methods such as thresholding, watershed segmentation, edge detection, and
+            morphological operations are still useful because they are fast, understandable, and do not require
+            the same amount of training data as deep neural networks.
+        </p>
+    </section>
+
+    <section class="content" id="approach">
+        <h2>Approach</h2>
+
+        <p>
+            This project begins with a baseline classical image processing pipeline. The image is denoised and
+            normalized, followed by thresholding and morphological cleanup. Watershed segmentation is then used
+            to separate touching cells, and the final labeled regions are used to extract morphology features.
+        </p>
+
+        <p>
+            The proposed approach focuses not only on brightness, but also on object shape and boundary information.
+            This allows the method to better handle cells that are touching or overlapping compared to simpler
+            threshold-only approaches.
+        </p>
+    </section>
+
+</div>
 
 </body>
 </html>
