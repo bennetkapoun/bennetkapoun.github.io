@@ -208,6 +208,57 @@
             while the table provides quantitative data that can be used to compare cell size, shape, and structure.
         </p>
 
+<h2>Challenges and Limitations</h2>
+
+<p>
+    While the final results demonstrate that the segmentation pipeline is able to identify and measure individual
+    cells, several challenges arose during development. These challenges highlight the difficulty of working with
+    real microscopy data and the limitations of classical image processing techniques.
+</p>
+
+<h3>Overlapping and Touching Cells</h3>
+<p>
+    One of the main challenges was separating cells that are touching or overlapping. Simple thresholding often merges
+    multiple cells into a single region. Although watershed segmentation improves this by splitting connected regions,
+    it is not always perfect and can still fail when cell boundaries are unclear or when cells are heavily clustered.
+</p>
+
+<h3>Noise and Image Quality</h3>
+<p>
+    Many images contain noise, uneven lighting, and inconsistent staining. These factors can cause false detections
+    or missed cells. While Gaussian smoothing and morphological operations help reduce noise, choosing the right
+    parameters is important and may not generalize well across all images.
+</p>
+
+<h3>Parameter Sensitivity</h3>
+<p>
+    The pipeline relies on several parameters such as thresholding behavior, minimum object size, and watershed marker
+    spacing. Small changes in these values can significantly affect the final segmentation. This makes the method
+    somewhat sensitive and requires tuning depending on the dataset.
+</p>
+
+<h3>Cell Size Variability</h3>
+<p>
+    Cells in the images vary in size and shape. Filtering regions based on area helps remove noise and large merged
+    regions, but it can also remove valid cells if the thresholds are not chosen carefully. This creates a tradeoff
+    between accuracy and robustness.
+</p>
+
+<h3>Limitations of Classical Methods</h3>
+<p>
+    Compared to modern deep learning approaches, this method does not learn from data and instead relies on fixed rules.
+    While it is fast and interpretable, it may struggle in more complex scenarios where cell boundaries are not clearly
+    defined. However, this also highlights the advantage of this approach, as it does not require large datasets or
+    expensive training.
+</p>
+
+<h3>Future Improvements</h3>
+<p>
+    Future improvements could include more advanced segmentation techniques, adaptive parameter selection, or combining
+    this pipeline with machine learning methods. Additionally, tracking cell morphology over time could provide deeper
+    insights into biological processes such as disease progression or cell growth.
+</p>
+        
     </section>
 
 </div>
