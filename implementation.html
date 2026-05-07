@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Implementation - Cell Segmentation</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Georgia, serif;
+        background-color: #f7f7f7;
+        color: #222;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 230px;
+        height: 100%;
+        background-color: #222;
+        padding-top: 60px;
+    }
+
+    .sidebar a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 16px 35px;
+        font-size: 18px;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        color: #ff4fa3;
+    }
+
+    .main {
+        margin-left: 230px;
+    }
+
+    .hero {
+        height: 300px;
+        background-color: #f2f2f2;
+        position: relative;
+    }
+
+    .hero-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .hero-text h1 {
+        font-family: Arial, sans-serif;
+        font-size: 52px;
+        color: #143f7a;
+        margin-bottom: 20px;
+    }
+
+    .hero-text p {
+        font-size: 22px;
+        font-style: italic;
+        color: #143f7a;
+    }
+
+    .content {
+        max-width: 950px;
+        margin: 80px auto;
+        padding: 0 40px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #143f7a;
+        font-family: Arial, sans-serif;
+        font-size: 30px;
+        margin-bottom: 35px;
+    }
+
+    h3 {
+        color: #143f7a;
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        margin-top: 45px;
+    }
+
+    p {
+        font-size: 18px;
+        line-height: 1.65;
+        margin-bottom: 22px;
+    }
+
+    ol, ul {
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    code {
+        background-color: #eeeeee;
+        padding: 2px 5px;
+        border-radius: 4px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="index.html#problem">Problem</a>
+    <a href="index.html#motivation">Motivation</a>
+    <a href="index.html#state">Related Work</a>
+    <a href="index.html#approach">Approach</a>
+    <a class="active" href="implementation.html">Implementation</a>
+    <a href="index.html#results">Results</a>
+    <a href="index.html#references">References</a>
+</div>
+
+<div class="main">
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Implementation</h1>
+            <p>Cell Detection, Counting, and Morphology Measurement</p>
+        </div>
+    </section>
+
+    <section class="content">
+
+        <h2>Implementation Overview</h2>
+
+        <p>
+            The implementation is organized into multiple Python files so that each part of the project has a clear
+            purpose. The main program acts as a controller and allows the user to run different parts of the pipeline
+            from the command line. The three main functions are image selection, cell counting, and morphology measurement.
+        </p>
+
+        <h3>Main Program</h3>
+
+        <p>
+            The file <code>main.py</code> controls which method is run. It imports three separate functions:
+            <code>open_image</code>, <code>count_cells</code>, and <code>measure_cells</code>. Depending on the command-line
+            argument, the program either selects a microscopy image, counts the number of detected cells, or extracts
+            quantitative measurements from the segmented cells.
+        </p>
+
+        <p>
+            This design makes the project easier to test because each stage of the pipeline can be run independently.
+            For example, running <code>python main.py open_image</code> saves a selected microscopy image as
+            <code>cell_img.png</code>. Then, <code>python main.py count_cells</code> estimates the number of cells, and
+            <code>python main.py measure_cells</code> produces a table of morphology measurements.
+        </p>
+
+        <h3>Image Selection</h3>
+
+        <p>
+            The <code>open_image</code> function searches through the dataset folders and randomly checks microscopy
+            images. Since the dataset contains many different types of images, the program tries to automatically find
+            an image that is useful for this project. It looks for images with strong contrast and a purple/blue color
+            pattern, because these images tend to show stained cells more clearly.
+        </p>
+
+        <p>
+            To do this, the image is normalized and separated into red, green, and blue channels. The program computes
+            a simple purple score by comparing the blue and green channel values. It also computes image contrast using
+            the standard deviation of the grayscale image. If the image passes both the purple-score threshold and the
+            contrast threshold, it is saved as <code>cell_img.png</code> and used for the rest of the pipeline.
+        </p>
+
+        <h3>Cell Counting</h3>
+
+        <p>
+            The <code>count_cells</code> function performs the main segmentation steps. First, it loads the saved image
+            and normalizes the pixel values. Then, it separates the image into red, green, and blue channels and creates
+            a purple-enhanced image using the formula:
+        </p>
+
+        <p>
+            <code>purple_score = ((red + blue) / 2) - green</code>
+        </p>
+
+        <p>
+            This step emphasizes purple and blue stained cell regions while reducing the influence of the background.
+            Gaussian smoothing is then applied to reduce noise before thresholding.
+        </p>
+
+        <p>
+            After smoothing, Otsu thresholding is used to automatically separate likely cell regions from the background.
+            Morphological operations are then applied to clean the binary mask. Small objects are removed, small holes
+            are filled, and opening is used to reduce noise.
+        </p>
+
+        <h3>Watershed Segmentation</h3>
+
+        <p>
+            One major challenge in cell segmentation is that cells often touch or overlap. If simple thresholding is used,
+            multiple cells may be merged together into one large object. To address this, the project uses distance-transform
+            watershed segmentation.
+        </p>
+
+        <p>
+            The distance transform finds pixels near the center of each detected object. Local maxima in this distance
+            image are used as markers for likely cell centers. Watershed segmentation then grows regions outward from
+            these markers, helping split connected blobs into individual cell regions.
+        </p>
+
+        <p>
+            After watershed segmentation, the program filters the detected regions by area. Very small regions are treated
+            as noise, while extremely large regions are treated as possible merged objects or false detections. The remaining
+            regions are counted as estimated cells.
+        </p>
+
+        <h3>Morphology Measurement</h3>
+
+        <p>
+            The <code>measure_cells</code> function uses the same segmentation pipeline, but instead of only counting cells,
+            it extracts quantitative measurements from each detected region. The program uses <code>regionprops_table</code>
+            to create a table of measurements for every labeled cell.
+        </p>
+
+        <p>
+            The extracted features include area, perimeter, eccentricity, solidity, major axis length, minor axis length,
+            centroid location, and mean intensity. These measurements describe the size, shape, position, and staining
+            strength of each detected cell.
+        </p>
+
+        <p>
+            Two additional measurements are calculated manually: circularity and aspect ratio. Circularity estimates how
+            round a cell is, while aspect ratio compares the major and minor axis lengths to describe how elongated a cell is.
+        </p>
+
+        <h3>Pipeline Summary</h3>
+
+        <ol>
+            <li>Search the dataset for a high-contrast purple/blue microscopy image.</li>
+            <li>Save the selected image as <code>cell_img.png</code>.</li>
+            <li>Enhance purple/blue stained regions using RGB channel differences.</li>
+            <li>Smooth the image with a Gaussian filter to reduce noise.</li>
+            <li>Use Otsu thresholding to create a binary cell mask.</li>
+            <li>Clean the mask using morphological operations.</li>
+            <li>Use distance-transform watershed to split touching cells.</li>
+            <li>Filter detected regions by area to remove noise and large false regions.</li>
+            <li>Count the detected cells.</li>
+            <li>Extract morphology measurements for each cell.</li>
+        </ol>
+
+        <h3>Why This Implementation Matters</h3>
+
+        <p>
+            This implementation goes beyond simply detecting bright regions in an image. It combines color enhancement,
+            automatic thresholding, morphological cleanup, watershed segmentation, and quantitative feature extraction.
+            As a result, the project produces both a visual segmentation and measurable biological information about
+            each detected cell.
+        </p>
+
+    </section>
+
+</div>
+
+</body>
+</html>
