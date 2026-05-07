@@ -235,18 +235,68 @@
 
         <h3>Pipeline Summary</h3>
 
-        <ol>
-            <li>Search the dataset for a high-contrast purple/blue microscopy image.</li>
-            <li>Save the selected image as <code>cell_img.png</code>.</li>
-            <li>Enhance purple/blue stained regions using RGB channel differences.</li>
-            <li>Smooth the image with a Gaussian filter to reduce noise.</li>
-            <li>Use Otsu thresholding to create a binary cell mask.</li>
-            <li>Clean the mask using morphological operations.</li>
-            <li>Use distance-transform watershed to split touching cells.</li>
-            <li>Filter detected regions by area to remove noise and large false regions.</li>
-            <li>Count the detected cells.</li>
-            <li>Extract morphology measurements for each cell.</li>
-        </ol>
+<ol>
+    <li>
+        <p><strong>Search the dataset for a high-contrast purple/blue microscopy image.</strong></p>
+        <p>The program scans the dataset and selects an image with strong contrast and visible stained cells.</p>
+        <img src="01_original.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Enhance purple/blue stained regions using RGB channel differences.</strong></p>
+        <p>This step emphasizes purple/blue stained cells while reducing background influence.</p>
+        <img src="02_purple_score.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Smooth the image with a Gaussian filter to reduce noise.</strong></p>
+        <p>Gaussian smoothing reduces small image noise before thresholding.</p>
+        <img src="03_smoothed.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Use Otsu thresholding to create a binary cell mask.</strong></p>
+        <p>Otsu thresholding separates likely cell regions from the background.</p>
+        <img src="04_threshold_mask.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Clean the mask using morphological operations.</strong></p>
+        <p>Opening removes small artifacts, small objects are filtered out, and small holes are filled.</p>
+        <img src="05_opening.png" width="500">
+        <img src="06_remove_small_objects.png" width="500">
+        <img src="07_filled_holes.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Use distance-transform watershed to split touching cells.</strong></p>
+        <p>The distance transform finds likely cell centers, markers identify those centers, and watershed separates connected cell regions.</p>
+        <img src="08_distance_transform.png" width="500">
+        <img src="09_markers.png" width="500">
+        <img src="10_watershed_labels.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Display final segmented cell boundaries.</strong></p>
+        <p>The final overlay shows the detected cell boundaries on the original microscopy image.</p>
+        <img src="11_final_boundaries.png" width="500">
+    </li>
+
+    <li>
+        <p><strong>Filter detected regions by area.</strong></p>
+        <p>Very small regions are removed as noise, and extremely large regions are filtered as likely merged regions or false detections.</p>
+    </li>
+
+    <li>
+        <p><strong>Count the detected cells.</strong></p>
+        <p>The remaining valid regions are counted as the final estimated number of cells.</p>
+    </li>
+
+    <li>
+        <p><strong>Extract morphology measurements for each cell.</strong></p>
+        <p>For each segmented cell, the program extracts area, perimeter, eccentricity, solidity, circularity, aspect ratio, centroid, and mean intensity.</p>
+    </li>
+</ol>
 
         <h3>Why This Implementation Matters</h3>
 
